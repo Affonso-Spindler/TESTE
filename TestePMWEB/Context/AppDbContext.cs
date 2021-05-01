@@ -18,5 +18,12 @@ namespace TestePMWEB.Context
         //propriedades de mapeamento das entidades que foram definidas na Model
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Pedido>().HasKey(p => new { p.ID_PEDIDO, p.ID_CLIENTE, p.ID_PRODUTO });
+
+            base.OnModelCreating(builder);
+        }
     }
 }

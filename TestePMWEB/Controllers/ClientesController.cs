@@ -38,7 +38,7 @@ namespace TestePMWEB.Controllers
 
 
         [HttpGet("{id}", Name = "ObterCliente")]
-        public ActionResult<Cliente> Get([FromQuery] int id)
+        public ActionResult<Cliente> Get(int id)
         {
             try
             {

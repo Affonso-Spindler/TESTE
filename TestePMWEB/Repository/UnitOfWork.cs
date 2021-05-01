@@ -1,5 +1,4 @@
-﻿using System;
-using TestePMWEB.Context;
+﻿using TestePMWEB.Context;
 
 namespace TestePMWEB.Repository
 {

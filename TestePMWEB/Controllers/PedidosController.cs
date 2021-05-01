@@ -37,12 +37,12 @@ namespace TestePMWEB.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "ObterPedido")]
-        public ActionResult<Pedido> Get([FromQuery] int id)
+        [HttpGet("{id}/{idCliente}", Name = "ObterPedido")]
+        public ActionResult<Pedido> Get(int id, int idCliente)
         {
             try
             {
-                var pedido = _uof.PedidoRepository.GetById(p => p.ID_PEDIDO == id);
+                var pedido = _uof.PedidoRepository.GetById(p => p.ID_PEDIDO == id && p.ID_CLIENTE == idCliente);
                 if (pedido == null)
                 {
                     return NotFound($"O pedido com id: {id} não foi encontrado");
