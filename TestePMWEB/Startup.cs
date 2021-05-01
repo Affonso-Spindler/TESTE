@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +33,16 @@ namespace TestePMWEB
         {
             string SqlConnection = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddMvc(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                config.Filters.Add(new AuthorizeFilter(policy));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -38,6 +51,27 @@ namespace TestePMWEB
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
+            /*JWT
+             * adiciona o manipulador de autenticação e define o
+             * esquema de autenticação usado : Bearer
+             * Valida o emissor, a audiencia e a chave
+             * usando a chave secreta Valida a assinatura
+             */
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+                AddJwtBearer(options =>
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidAudience = Configuration["TokenConfiguration:Audience"],
+                        ValidIssuer = Configuration["TokenConfiguration:Issuer"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["Jwt:key"]))
+
+                    });
         }
 
 

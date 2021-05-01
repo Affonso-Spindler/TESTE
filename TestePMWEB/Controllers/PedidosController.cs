@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using TestePMWEB.Repository;
 
 namespace TestePMWEB.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[Controller]")]
     [ApiController]
     public class PedidosController : ControllerBase

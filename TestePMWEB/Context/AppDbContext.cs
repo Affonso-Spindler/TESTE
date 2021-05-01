@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using TestePMWEB.Models;
@@ -21,6 +22,8 @@ namespace TestePMWEB.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Cliente>().Property(c => c.ID).ValueGeneratedNever();
+
             builder.Entity<Pedido>().HasKey(p => new { p.ID_PEDIDO, p.ID_CLIENTE, p.ID_PRODUTO });
 
             base.OnModelCreating(builder);

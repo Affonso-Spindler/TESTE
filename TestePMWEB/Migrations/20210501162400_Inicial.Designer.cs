@@ -10,8 +10,8 @@ using TestePMWEB.Context;
 namespace TestePMWEB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210501043959_Identity")]
-    partial class Identity
+    [Migration("20210501162400_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -184,12 +184,9 @@ namespace TestePMWEB.Migrations
 
             modelBuilder.Entity("TestePMWEB.Models.Cliente", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("ID");
 
                     b.Property<string>("CIDADE")
-                        .IsRequired()
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("DATA_NASCIMENTO");
@@ -205,7 +202,6 @@ namespace TestePMWEB.Migrations
                     b.Property<short>("PERMISSAO_RECEBE_EMAIL");
 
                     b.Property<string>("UF")
-                        .IsRequired()
                         .HasMaxLength(2);
 
                     b.HasKey("ID");
