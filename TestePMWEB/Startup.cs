@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestePMWEB.Context;
+using TestePMWEB.Filters;
 using TestePMWEB.Repository;
 
 namespace TestePMWEB
@@ -45,6 +46,8 @@ namespace TestePMWEB
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<LoggingFilter>();
 
             services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(SqlConnection));
 

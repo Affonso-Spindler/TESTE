@@ -8,14 +8,23 @@ namespace TestePMWEB.Models
     public class Pedido
     {
         [Key]
+        [Required(ErrorMessage = "Id do Pedido não informada")]
+        [Range(1, int.MaxValue, ErrorMessage = "Id do Pedido não informada")]
         public int ID_PEDIDO { get; set; }
 
-        [Key]
-        public int ID_CLIENTE { get; set; }
-        public Cliente CLIENTE { get; set; }
         
         [Key]
+        [Required(ErrorMessage = "Id do Cliente não informada")]
+        [Range(1, int.MaxValue, ErrorMessage = "Id do Cliente não informada")]
+        public int ID_CLIENTE { get; set; }
+
+        public virtual Cliente Cliente { get; set; }
+
+        [Key]
+        [Required(ErrorMessage = "Id do Produto não informada")]
+        [Range(1, int.MaxValue, ErrorMessage = "Id do Produto não informada")]
         public int ID_PRODUTO { get; set; }
+
         
         [MaxLength(50)]
         public string DEPARTAMENTO { get; set; }
@@ -24,7 +33,6 @@ namespace TestePMWEB.Models
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(8, 3)")]
-        [Range(0,1,ErrorMessage ="Valor diferente de 0 ou 1")]
         public decimal VALOR_UNITARIO { get; set; }
 
         public int PARCELAS { get; set; }

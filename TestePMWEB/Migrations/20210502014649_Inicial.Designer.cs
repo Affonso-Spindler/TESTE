@@ -10,7 +10,7 @@ using TestePMWEB.Context;
 namespace TestePMWEB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210501162400_Inicial")]
+    [Migration("20210502014649_Inicial")]
     partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,6 +182,27 @@ namespace TestePMWEB.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("TestePMWEB.Models.API_Log", b =>
+                {
+                    b.Property<int>("ID_MENSAGEM")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("DATA_REFERENCIA");
+
+                    b.Property<int>("DETALHE");
+
+                    b.Property<string>("MENSAGEM");
+
+                    b.Property<short>("RESULTADO");
+
+                    b.Property<string>("TIPO");
+
+                    b.HasKey("ID_MENSAGEM");
+
+                    b.ToTable("API_Logs");
+                });
+
             modelBuilder.Entity("TestePMWEB.Models.Cliente", b =>
                 {
                     b.Property<int>("ID");
@@ -217,7 +238,7 @@ namespace TestePMWEB.Migrations
 
                     b.Property<int>("ID_PRODUTO");
 
-                    b.Property<int?>("CLIENTEID");
+                    b.Property<int?>("ClienteID");
 
                     b.Property<DateTime>("DATA_PEDIDO");
 
@@ -241,7 +262,7 @@ namespace TestePMWEB.Migrations
 
                     b.HasAlternateKey("ID_CLIENTE", "ID_PEDIDO", "ID_PRODUTO");
 
-                    b.HasIndex("CLIENTEID");
+                    b.HasIndex("ClienteID");
 
                     b.ToTable("Pedidos");
                 });
@@ -293,9 +314,9 @@ namespace TestePMWEB.Migrations
 
             modelBuilder.Entity("TestePMWEB.Models.Pedido", b =>
                 {
-                    b.HasOne("TestePMWEB.Models.Cliente", "CLIENTE")
+                    b.HasOne("TestePMWEB.Models.Cliente", "Cliente")
                         .WithMany("Pedidos")
-                        .HasForeignKey("CLIENTEID");
+                        .HasForeignKey("ClienteID");
                 });
 #pragma warning restore 612, 618
         }

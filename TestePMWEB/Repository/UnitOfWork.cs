@@ -6,11 +6,20 @@ namespace TestePMWEB.Repository
     {
         private PedidoRepository _pedidoRepo;
         private ClienteRepository _clienteRepo;
+        private API_LogRepository _logRepo;
         public AppDbContext _context;
 
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
+        }
+
+        public IPedidoRepository PedidoRepository
+        {
+            get
+            {
+                return _pedidoRepo = _pedidoRepo ?? new PedidoRepository(_context);
+            }
         }
 
         public IClienteRepository ClienteRepository
@@ -21,13 +30,14 @@ namespace TestePMWEB.Repository
             }
         }
 
-        public IPedidoRepository PedidoRepository
+        public IAPI_LogRepository API_LogRepository
         {
             get
             {
-                return _pedidoRepo = _pedidoRepo ?? new PedidoRepository(_context);
+                return _logRepo = _logRepo ?? new API_LogRepository(_context);
             }
         }
+
 
         public void Commit()
         {

@@ -19,6 +19,7 @@ namespace TestePMWEB.Context
         //propriedades de mapeamento das entidades que foram definidas na Model
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<API_Log> API_Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestePMWEB.Filters;
 using TestePMWEB.Models;
 using TestePMWEB.Repository;
 
 namespace TestePMWEB.Controllers
 {
+    [ServiceFilter(typeof(LoggingFilter))]
     [Authorize(AuthenticationSchemes ="Bearer")]
     [Route("api/[Controller]")]
     [ApiController]

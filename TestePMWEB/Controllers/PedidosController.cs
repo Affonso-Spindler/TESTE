@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestePMWEB.Filters;
 using TestePMWEB.Models;
 using TestePMWEB.Repository;
 
 namespace TestePMWEB.Controllers
 {
+    [ServiceFilter(typeof(LoggingFilter))]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[Controller]")]
     [ApiController]
@@ -39,12 +41,12 @@ namespace TestePMWEB.Controllers
         }
 
 
-        [HttpGet("{id}/{idCliente}", Name = "ObterPedido")]
-        public ActionResult<Pedido> Get(int id, int idCliente)
+        [HttpGet("{id}", Name = "ObterPedido")]
+        public ActionResult<Pedido> Get(int id)
         {
             try
             {
-                var pedido = _uof.PedidoRepository.GetById(p => p.ID_PEDIDO == id && p.ID_CLIENTE == idCliente);
+                var pedido = _uof.PedidoRepository.GetById(p => p.ID_PEDIDO == id);
                 if (pedido == null)
                 {
                     return NotFound($"O pedido com id: {id} não foi encontrado");

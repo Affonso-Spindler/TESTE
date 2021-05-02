@@ -6,6 +6,8 @@
 
         IPedidoRepository PedidoRepository { get; }
 
+        IAPI_LogRepository API_LogRepository { get; }
+
         void Commit();
     }
 }

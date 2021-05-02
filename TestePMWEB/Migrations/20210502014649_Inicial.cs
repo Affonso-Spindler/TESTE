@@ -9,6 +9,23 @@ namespace TestePMWEB.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "API_Logs",
+                columns: table => new
+                {
+                    ID_MENSAGEM = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DATA_REFERENCIA = table.Column<long>(nullable: false),
+                    TIPO = table.Column<string>(nullable: true),
+                    RESULTADO = table.Column<short>(nullable: false),
+                    DETALHE = table.Column<int>(nullable: false),
+                    MENSAGEM = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_API_Logs", x => x.ID_MENSAGEM);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -177,7 +194,7 @@ namespace TestePMWEB.Migrations
                     ID_PEDIDO = table.Column<int>(nullable: false),
                     ID_CLIENTE = table.Column<int>(nullable: false),
                     ID_PRODUTO = table.Column<int>(nullable: false),
-                    CLIENTEID = table.Column<int>(nullable: true),
+                    ClienteID = table.Column<int>(nullable: true),
                     DEPARTAMENTO = table.Column<string>(maxLength: 50, nullable: true),
                     QUANTIDADE = table.Column<int>(nullable: false),
                     VALOR_UNITARIO = table.Column<decimal>(type: "decimal(8, 3)", nullable: false),
@@ -191,8 +208,8 @@ namespace TestePMWEB.Migrations
                     table.PrimaryKey("PK_Pedidos", x => new { x.ID_PEDIDO, x.ID_CLIENTE, x.ID_PRODUTO });
                     table.UniqueConstraint("AK_Pedidos_ID_CLIENTE_ID_PEDIDO_ID_PRODUTO", x => new { x.ID_CLIENTE, x.ID_PEDIDO, x.ID_PRODUTO });
                     table.ForeignKey(
-                        name: "FK_Pedidos_Clientes_CLIENTEID",
-                        column: x => x.CLIENTEID,
+                        name: "FK_Pedidos_Clientes_ClienteID",
+                        column: x => x.ClienteID,
                         principalTable: "Clientes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
@@ -238,13 +255,16 @@ namespace TestePMWEB.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_CLIENTEID",
+                name: "IX_Pedidos_ClienteID",
                 table: "Pedidos",
-                column: "CLIENTEID");
+                column: "ClienteID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "API_Logs");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
