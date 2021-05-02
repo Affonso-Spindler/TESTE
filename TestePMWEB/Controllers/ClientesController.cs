@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TestePMWEB.Filters;
 using TestePMWEB.Models;
 using TestePMWEB.Repository;
@@ -11,7 +14,7 @@ using TestePMWEB.Repository;
 namespace TestePMWEB.Controllers
 {
     [ServiceFilter(typeof(LoggingFilter))]
-    [Authorize(AuthenticationSchemes ="Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[Controller]")]
     [ApiController]
     public class ClientesController : ControllerBase
@@ -71,11 +74,11 @@ namespace TestePMWEB.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                
+
                 _uof.ClienteRepository.Add(cliente);
                 _uof.Commit();
 
-                return new CreatedAtRouteResult("ObterCliente", new { id = cliente.ID}, cliente);
+                return new CreatedAtRouteResult("ObterCliente", new { id = cliente.ID }, cliente);
             }
             catch (Exception)
             {
@@ -133,6 +136,25 @@ namespace TestePMWEB.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar excluir o cliente com id: {id}");
             }
+        }
+
+
+
+        [AllowAnonymous]
+        [Route("EnviarArquivo")]
+        [HttpPost]
+        public void EnviarArquivo(IFormFile arquivo)
+        {
+            StringBuilder text = new StringBuilder();
+            
+            using(StreamReader reader = new StreamReader(arquivo.OpenReadStream()))
+            {
+                while(reader.Peek() >= 0)
+                {
+                    text.AppendLine(reader.ReadLine());
+                }
+            }
+
         }
     }
 }

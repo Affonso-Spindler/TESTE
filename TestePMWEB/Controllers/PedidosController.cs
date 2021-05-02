@@ -11,7 +11,7 @@ using TestePMWEB.Repository;
 namespace TestePMWEB.Controllers
 {
     [ServiceFilter(typeof(LoggingFilter))]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[Controller]")]
     [ApiController]
     public class PedidosController : ControllerBase

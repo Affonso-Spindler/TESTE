@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<h1>Enviar Arquivos</h1>
+<hr />
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <div class="row">
+            <section>
+                @using (Html.BeginForm("EnviarArquivo", "Clientes", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <p>Enviar um ou mais arquivos :</p>
+                            <input type="file" name="arquivo"  />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Enviar Arquivo" />
+                        </div>
+                    </div>
+                }
+                <!--<form method="post" enctype="multipart/form-data" asp-controller="Upload"asp-action="EnviarArquivo">-->
+                @*</form>*@
+            </section>
+        </div>
+    </div>
+</div>
