@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -14,10 +14,15 @@ using TestePMWEB.DTOs;
 
 namespace TestePMWEB.Controllers
 {
+    public interface IUserService
+    {
+        Task<ActionResult> Login(UsuarioDTO userInfo);
+    }
+
     [AllowAnonymous]
     [Route("api/[Controller]")]
     [ApiController]
-    public class AutorizaController : ControllerBase
+    public class AutorizaController : ControllerBase, IUserService
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -29,8 +34,8 @@ namespace TestePMWEB.Controllers
             _signInManager = signInManager;
             _configuration = configuration;
         }
-        
-        
+
+
         [HttpGet]
         public ActionResult<string> Get()
         {
@@ -38,10 +43,14 @@ namespace TestePMWEB.Controllers
         }
 
 
-        //autoriza/register
         [HttpPost("register")]
-        public async Task<ActionResult> RegisterUser([FromBody] UsuarioDTO model)
+        public async Task<ActionResult> RegisterUser([FromForm] UsuarioDTO model)
         {
+            if (model.ConfirmPassword != model.Password)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    "Dados inválidos para registro");
+            }
             var user = new IdentityUser
             {
                 UserName = model.Email,
@@ -57,14 +66,15 @@ namespace TestePMWEB.Controllers
             }
 
             await _signInManager.SignInAsync(user, false);
-            
-            return Ok(GeraToken(model));
+
+            //return Ok(GeraToken(model));
+            return new RedirectToActionResult("Index", "Upload", null);
         }
 
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] UsuarioDTO userInfo)
-        {
+        public async Task<ActionResult> Login([FromForm] UsuarioDTO userInfo)
+         {
             //verifica se o modelo é válido
             if (!ModelState.IsValid)
             {
@@ -75,9 +85,10 @@ namespace TestePMWEB.Controllers
             var result = await _signInManager.PasswordSignInAsync(userInfo.Email
                 , userInfo.Password, isPersistent: false, lockoutOnFailure: false);
 
+
             if (result.Succeeded)
             {
-                return Ok(GeraToken(userInfo));
+                return new RedirectToActionResult("Index","Upload", null);
             }
             else
             {
@@ -115,10 +126,13 @@ namespace TestePMWEB.Controllers
                 expires: expiration,
                 signingCredentials: credenciais);
 
+            string tokenstr = new JwtSecurityTokenHandler().WriteToken(token);
+
+
             return new UsuarioToken()
             {
                 Authenticated = true,
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Token = tokenstr,
                 Expiration = expiration,
                 Message = "Token JWT OK"
             };

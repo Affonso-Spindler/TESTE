@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TestePMWEB.Filters;
 using TestePMWEB.Models;
 using TestePMWEB.Repository;
@@ -14,7 +13,7 @@ using TestePMWEB.Repository;
 namespace TestePMWEB.Controllers
 {
     [ServiceFilter(typeof(LoggingFilter))]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class ClientesController : ControllerBase
@@ -34,7 +33,7 @@ namespace TestePMWEB.Controllers
             {
                 var clientes = _uof.ClienteRepository.Get().ToList();
 
-                return clientes;
+                return Ok(clientes);
             }
             catch (Exception)
             {
@@ -44,7 +43,7 @@ namespace TestePMWEB.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "ObterCliente")]
+        [HttpGet("{id}")]
         public ActionResult<Cliente> Get(int id)
         {
             try
@@ -55,12 +54,12 @@ namespace TestePMWEB.Controllers
                     return NotFound($"O cliente com id: {id} não foi encontrado");
                 }
 
-                return cliente;
+                return Ok(cliente);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Erro ao tentar obter cliente com id:{id} no banco de dados");
+                return StatusCode(StatusCodes.Status500InternalServerError
+                    , "Erro ao tentar obter cliente com id:{id} no banco de dados");
             }
         }
 
@@ -78,7 +77,7 @@ namespace TestePMWEB.Controllers
                 _uof.ClienteRepository.Add(cliente);
                 _uof.Commit();
 
-                return new CreatedAtRouteResult("ObterCliente", new { id = cliente.ID }, cliente);
+                return StatusCode(StatusCodes.Status201Created, cliente);
             }
             catch (Exception)
             {
@@ -102,14 +101,13 @@ namespace TestePMWEB.Controllers
                 _uof.ClienteRepository.Update(cliente);
                 _uof.Commit();
 
-                return Ok();
+                return Ok(cliente);
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $" Erro ao tentar atualizar o cliente com id: {id}");
             }
-
         }
 
 
@@ -129,7 +127,7 @@ namespace TestePMWEB.Controllers
                 _uof.ClienteRepository.Delete(cliente);
                 _uof.Commit();
 
-                return cliente;
+                return Ok(cliente);
             }
             catch (Exception)
             {
@@ -140,21 +138,81 @@ namespace TestePMWEB.Controllers
 
 
 
-        [AllowAnonymous]
         [Route("EnviarArquivo")]
         [HttpPost]
-        public void EnviarArquivo(IFormFile arquivo)
+        public ActionResult EnviarArquivo(IFormFile arquivo)
         {
-            StringBuilder text = new StringBuilder();
-            
-            using(StreamReader reader = new StreamReader(arquivo.OpenReadStream()))
+            try
             {
-                while(reader.Peek() >= 0)
+                if (arquivo == null)
                 {
-                    text.AppendLine(reader.ReadLine());
+                    throw new Exception("Nenhum arquivo carregado");
                 }
-            }
+                StringBuilder text = new StringBuilder();
 
+                using (StreamReader reader = new StreamReader(arquivo.OpenReadStream()
+                    , Encoding.UTF8, false))
+                {
+                    while (reader.Peek() >= 0)
+                    {
+                        text.AppendLine(reader.ReadLine());
+                    }
+                    bool isFirstLine = true;
+
+                    foreach (string line in text.ToString().Split(Environment.NewLine.ToCharArray()))
+                    {
+
+                        if (string.IsNullOrEmpty(line))
+                        {
+                            continue;
+                        }
+                        string[] itens = line.Split('\t');
+
+                        //valida o começo do cabeçalho do arquivo
+                        if (isFirstLine && !(itens[0].Equals("ID") &&
+                            itens[1].Equals("EMAIL") &&
+                            itens[2].Equals("NOME")))
+                        {
+                            throw new Exception("O arquivo de importação não corresponde a Clientes");
+                        }
+                        //pula a primeira linha de cabeçalho
+                        if (isFirstLine)
+                        {
+                            isFirstLine = false;
+                            continue;
+                        }
+
+
+                        Cliente newCliente = new Cliente
+                        {
+                            ID = Convert.ToInt32(itens[0]),
+                            EMAIL = itens[1],
+                            NOME = itens[2],
+                            DATA_NASCIMENTO = DateTime.Parse(itens[3]),
+                            CIDADE = itens[6],
+                            UF = itens[7],
+                            PERMISSAO_RECEBE_EMAIL = Convert.ToInt16(itens[8])
+                        };
+
+                        var cliente = _uof.ClienteRepository.GetById(c => c.ID == newCliente.ID);
+                        if (cliente != null)
+                        {
+                            _uof.ClienteRepository.Update(newCliente);
+                            _uof.Commit();
+                        }
+                        else
+                        {
+                            _uof.ClienteRepository.Add(newCliente);
+                        }
+                    }
+                }
+                return StatusCode(StatusCodes.Status200OK, "Dados inseridos com sucesso");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+
+            }
         }
     }
 }

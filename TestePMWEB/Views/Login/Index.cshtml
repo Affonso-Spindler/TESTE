@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+<h1>Login</h1>
+<hr />
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        <section>
+            @using (Html.BeginForm("Login", "Autoriza", FormMethod.Post))
+            {
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <p>Email:</p>
+                        <input type="text" name="email" />
+                        <p>Senha:</p>
+                        <input type="password" name="password" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <input type="submit" value="Efetuar Login" />
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>

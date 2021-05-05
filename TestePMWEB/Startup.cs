@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using APICatalogo.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,11 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TestePMWEB.Context;
+using TestePMWEB.Controllers;
 using TestePMWEB.Filters;
 using TestePMWEB.Repository;
 
@@ -35,14 +35,15 @@ namespace TestePMWEB
         {
             string SqlConnection = Configuration.GetConnectionString("DefaultConnection");
 
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(60); });
 
             services.AddMvc(config =>
             {
@@ -53,11 +54,13 @@ namespace TestePMWEB
                 config.Filters.Add(new AuthorizeFilter(policy));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddScoped<IUserService, AutorizaController>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<LoggingFilter>();
 
-            services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(SqlConnection));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(SqlConnection));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
@@ -71,6 +74,9 @@ namespace TestePMWEB
              */
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
                 AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -82,7 +88,9 @@ namespace TestePMWEB
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(Configuration["Jwt:key"]))
 
-                    });
+                    };
+                });
+
         }
 
 
@@ -93,6 +101,10 @@ namespace TestePMWEB
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSession();
+
+            app.ConfigureExceptionHandler();
 
             app.UseStaticFiles();
 

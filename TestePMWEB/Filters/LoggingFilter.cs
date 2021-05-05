@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
@@ -10,19 +12,21 @@ namespace TestePMWEB.Filters
 {
     public class LoggingFilter : IActionFilter
     {
-        private readonly ILogger<LoggingFilter> _logger;
         private readonly IUnitOfWork _uof;
 
-        public LoggingFilter(ILogger<LoggingFilter> logger, IUnitOfWork uof)
+        public LoggingFilter(IUnitOfWork uof)
         {
-            _logger = logger;
             _uof = uof;
         }
 
         //Antes da Action
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            HttpStatusCode code = (HttpStatusCode)context.HttpContext.Response.StatusCode;
+            ObjectResult obj = context.Result as ObjectResult;
+            var status = obj.StatusCode;
+
+
+            HttpStatusCode code = (HttpStatusCode)status;
             var message = new HttpResponseMessage(code);
             
             short result = 0;
@@ -37,7 +41,7 @@ namespace TestePMWEB.Filters
                 DATA_REFERENCIA = timestamp,
                 MENSAGEM = message.ReasonPhrase,
                 TIPO = tipo,
-                DETALHE = context.HttpContext.Response.StatusCode,
+                DETALHE = (int)status,
                 RESULTADO = result
             };
 
