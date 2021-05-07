@@ -2,7 +2,7 @@
 
 namespace TestePMWEB.Migrations
 {
-    public partial class TRIGGER_Cons_RFV : Migration
+    public partial class T_Cons_RFV : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

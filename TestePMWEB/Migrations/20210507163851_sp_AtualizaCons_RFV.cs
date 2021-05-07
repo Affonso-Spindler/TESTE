@@ -2,11 +2,11 @@
 
 namespace TestePMWEB.Migrations
 {
-    public partial class p_AtualizaCons_RFV : Migration
+    public partial class sp_AtualizaCons_RFV : Migration
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(@"
+		protected override void Up(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.Sql(@"
 IF EXISTS(SELECT id FROM sysobjects WHERE name='p_AtualizaCons_RFV' AND xtype='P')
 	DROP PROCEDURE [dbo].p_AtualizaCons_RFV
 GO
@@ -76,11 +76,11 @@ BEGIN
 			Cons_RFV.TIER_ATUAL	= #tempcli.TIER_ATUAL
 		FROM Cons_RFV INNER JOIN #tempcli on #tempcli.ID_CLIENTE = Cons_RFV.ID_CLIENTE
 	DROP TABLE #tempcli
-END");
+END
+");
+		}
 
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
+		protected override void Down(MigrationBuilder migrationBuilder)
         {
 
         }

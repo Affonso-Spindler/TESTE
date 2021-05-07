@@ -105,14 +105,14 @@ namespace TestePMWEB.Migrations
                 columns: table => new
                 {
                     ID_CLIENTE = table.Column<int>(nullable: false),
-                    DATA_ULTIMA_COMPRA = table.Column<DateTime>(nullable: false),
+                    DATA_ULTIMA_COMPRA = table.Column<DateTime>(nullable: true),
                     ULTIMO_DEPTO_COMPRA = table.Column<string>(maxLength: 30, nullable: true),
                     PARCELAMENTO_PREFER = table.Column<string>(maxLength: 20, nullable: true),
                     MEIO_PAGAMENTO_PREFER = table.Column<string>(maxLength: 30, nullable: true),
-                    TICKET_MEDIO_ALL = table.Column<decimal>(type: "decimal(8, 3)", nullable: false),
-                    TICKET_MEDIO_12M = table.Column<decimal>(type: "decimal(8, 3)", nullable: false),
-                    FREQUENCIA_COMPRA_ALL = table.Column<int>(nullable: false),
-                    FREQUENCIA_COMPRA_12M = table.Column<int>(nullable: false),
+                    TICKET_MEDIO_ALL = table.Column<decimal>(type: "decimal(8, 3)", nullable: true),
+                    TICKET_MEDIO_12M = table.Column<decimal>(type: "decimal(8, 3)", nullable: true),
+                    FREQUENCIA_COMPRA_ALL = table.Column<int>(nullable: true),
+                    FREQUENCIA_COMPRA_12M = table.Column<int>(nullable: true),
                     TIER_ATUAL = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -246,7 +246,6 @@ namespace TestePMWEB.Migrations
                     ID_PEDIDO = table.Column<int>(nullable: false),
                     ID_CLIENTE = table.Column<int>(nullable: false),
                     ID_PRODUTO = table.Column<int>(nullable: false),
-                    ClienteID = table.Column<int>(nullable: true),
                     DEPARTAMENTO = table.Column<string>(maxLength: 50, nullable: true),
                     QUANTIDADE = table.Column<int>(nullable: false),
                     VALOR_UNITARIO = table.Column<decimal>(type: "money", nullable: false),
@@ -260,11 +259,11 @@ namespace TestePMWEB.Migrations
                     table.PrimaryKey("PK_Pedidos", x => new { x.ID_PEDIDO, x.ID_CLIENTE, x.ID_PRODUTO });
                     table.UniqueConstraint("AK_Pedidos_ID_CLIENTE_ID_PEDIDO_ID_PRODUTO", x => new { x.ID_CLIENTE, x.ID_PEDIDO, x.ID_PRODUTO });
                     table.ForeignKey(
-                        name: "FK_Pedidos_Clientes_ClienteID",
-                        column: x => x.ClienteID,
+                        name: "FK_Pedidos_Clientes_ID_CLIENTE",
+                        column: x => x.ID_CLIENTE,
                         principalTable: "Clientes",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -305,11 +304,6 @@ namespace TestePMWEB.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_ClienteID",
-                table: "Pedidos",
-                column: "ClienteID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

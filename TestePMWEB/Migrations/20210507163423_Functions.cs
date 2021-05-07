@@ -2,7 +2,7 @@
 
 namespace TestePMWEB.Migrations
 {
-    public partial class Function : Migration
+    public partial class Functions : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

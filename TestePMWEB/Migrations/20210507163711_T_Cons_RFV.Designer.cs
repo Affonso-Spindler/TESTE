@@ -10,8 +10,8 @@ using TestePMWEB.Context;
 namespace TestePMWEB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210507141455_Function")]
-    partial class Function
+    [Migration("20210507163711_T_Cons_RFV")]
+    partial class T_Cons_RFV
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -266,11 +266,11 @@ namespace TestePMWEB.Migrations
                 {
                     b.Property<int>("ID_CLIENTE");
 
-                    b.Property<DateTime>("DATA_ULTIMA_COMPRA");
+                    b.Property<DateTime?>("DATA_ULTIMA_COMPRA");
 
-                    b.Property<int>("FREQUENCIA_COMPRA_12M");
+                    b.Property<int?>("FREQUENCIA_COMPRA_12M");
 
-                    b.Property<int>("FREQUENCIA_COMPRA_ALL");
+                    b.Property<int?>("FREQUENCIA_COMPRA_ALL");
 
                     b.Property<string>("MEIO_PAGAMENTO_PREFER")
                         .HasMaxLength(30);
@@ -278,10 +278,10 @@ namespace TestePMWEB.Migrations
                     b.Property<string>("PARCELAMENTO_PREFER")
                         .HasMaxLength(20);
 
-                    b.Property<decimal>("TICKET_MEDIO_12M")
+                    b.Property<decimal?>("TICKET_MEDIO_12M")
                         .HasColumnType("decimal(8, 3)");
 
-                    b.Property<decimal>("TICKET_MEDIO_ALL")
+                    b.Property<decimal?>("TICKET_MEDIO_ALL")
                         .HasColumnType("decimal(8, 3)");
 
                     b.Property<string>("TIER_ATUAL");
@@ -301,8 +301,6 @@ namespace TestePMWEB.Migrations
                     b.Property<int>("ID_CLIENTE");
 
                     b.Property<int>("ID_PRODUTO");
-
-                    b.Property<int?>("ClienteID");
 
                     b.Property<DateTime>("DATA_PEDIDO");
 
@@ -326,8 +324,6 @@ namespace TestePMWEB.Migrations
                     b.HasKey("ID_PEDIDO", "ID_CLIENTE", "ID_PRODUTO");
 
                     b.HasAlternateKey("ID_CLIENTE", "ID_PEDIDO", "ID_PRODUTO");
-
-                    b.HasIndex("ClienteID");
 
                     b.ToTable("Pedidos");
                 });
@@ -395,7 +391,8 @@ namespace TestePMWEB.Migrations
                 {
                     b.HasOne("TestePMWEB.Models.Cliente", "Cliente")
                         .WithMany("Pedidos")
-                        .HasForeignKey("ClienteID");
+                        .HasForeignKey("ID_CLIENTE")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

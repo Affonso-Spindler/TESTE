@@ -10,8 +10,8 @@ using TestePMWEB.Context;
 namespace TestePMWEB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210507142635_Correcao_Cons_RFV")]
-    partial class Correcao_Cons_RFV
+    [Migration("20210507163351_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -302,8 +302,6 @@ namespace TestePMWEB.Migrations
 
                     b.Property<int>("ID_PRODUTO");
 
-                    b.Property<int?>("ClienteID");
-
                     b.Property<DateTime>("DATA_PEDIDO");
 
                     b.Property<string>("DEPARTAMENTO")
@@ -326,8 +324,6 @@ namespace TestePMWEB.Migrations
                     b.HasKey("ID_PEDIDO", "ID_CLIENTE", "ID_PRODUTO");
 
                     b.HasAlternateKey("ID_CLIENTE", "ID_PEDIDO", "ID_PRODUTO");
-
-                    b.HasIndex("ClienteID");
 
                     b.ToTable("Pedidos");
                 });
@@ -395,7 +391,8 @@ namespace TestePMWEB.Migrations
                 {
                     b.HasOne("TestePMWEB.Models.Cliente", "Cliente")
                         .WithMany("Pedidos")
-                        .HasForeignKey("ClienteID");
+                        .HasForeignKey("ID_CLIENTE")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -2,11 +2,11 @@
 
 namespace TestePMWEB.Migrations
 {
-    public partial class p_AtualizaCons_Clientes : Migration
+    public partial class sp_AtualizaCons_Clientes : Migration
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(@"
+		protected override void Up(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.Sql(@"
 IF EXISTS(SELECT id FROM sysobjects WHERE name='p_AtualizaCons_Clientes' AND xtype='P')
 	DROP PROCEDURE [dbo].p_AtualizaCons_Clientes
 GO
@@ -56,9 +56,9 @@ BEGIN
 	DROP TABLE #temp
 END
 ");
-        }
+		}
 
-        protected override void Down(MigrationBuilder migrationBuilder)
+		protected override void Down(MigrationBuilder migrationBuilder)
         {
 
         }
