@@ -21,6 +21,7 @@ namespace TestePMWEB.Filters
 
         //Antes da Action
         public void OnActionExecuted(ActionExecutedContext context)
+        
         {
             ObjectResult obj = context.Result as ObjectResult;
             var status = obj.StatusCode;

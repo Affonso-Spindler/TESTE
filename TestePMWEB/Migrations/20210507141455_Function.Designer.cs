@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestePMWEB.Context;
 
 namespace TestePMWEB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210507141455_Function")]
+    partial class Function
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,11 +266,11 @@ namespace TestePMWEB.Migrations
                 {
                     b.Property<int>("ID_CLIENTE");
 
-                    b.Property<DateTime?>("DATA_ULTIMA_COMPRA");
+                    b.Property<DateTime>("DATA_ULTIMA_COMPRA");
 
-                    b.Property<int?>("FREQUENCIA_COMPRA_12M");
+                    b.Property<int>("FREQUENCIA_COMPRA_12M");
 
-                    b.Property<int?>("FREQUENCIA_COMPRA_ALL");
+                    b.Property<int>("FREQUENCIA_COMPRA_ALL");
 
                     b.Property<string>("MEIO_PAGAMENTO_PREFER")
                         .HasMaxLength(30);
@@ -276,10 +278,10 @@ namespace TestePMWEB.Migrations
                     b.Property<string>("PARCELAMENTO_PREFER")
                         .HasMaxLength(20);
 
-                    b.Property<decimal?>("TICKET_MEDIO_12M")
+                    b.Property<decimal>("TICKET_MEDIO_12M")
                         .HasColumnType("decimal(8, 3)");
 
-                    b.Property<decimal?>("TICKET_MEDIO_ALL")
+                    b.Property<decimal>("TICKET_MEDIO_ALL")
                         .HasColumnType("decimal(8, 3)");
 
                     b.Property<string>("TIER_ATUAL");

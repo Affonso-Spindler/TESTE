@@ -64,6 +64,100 @@ namespace TestePMWEB.Controllers
         }
 
 
+        [HttpGet("regiao/{uf}")]
+        public ActionResult<Cliente> GetByRegiao(string uf)
+        {
+            try
+            {
+                var cliente = _uof.ClienteRepository.GetByRegiao(uf);
+                if (cliente == null)
+                {
+                    return NotFound($"Nenhum cliente encontrado para uf:{uf}");
+                }
+
+                return Ok(cliente);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError
+                    , $"Erro ao tentar obter clientes da uf:{uf} no banco de dados");
+            }
+        }
+
+
+        [HttpGet("regiao/{uf}/{cidade}")]
+        public ActionResult<Cliente> GetByRegiao(string uf, string cidade)
+        {
+            try
+            {
+                var cliente = _uof.ClienteRepository.GetByRegiao(uf, cidade);
+                if (cliente == null)
+                {
+                    return NotFound($"Nenhum cliente encontrado para uf: {uf} e cidade: {cidade}");
+                }
+
+                return Ok(cliente);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError
+                    , $"Erro ao tentar obter clientes da uf: {uf} e cidade: {cidade} no banco de dados");
+            }
+        }
+
+
+        [HttpGet("tiers")]
+        public ActionResult<Cons_Cliente> GetByTiers([FromQuery] string tier = null)
+        {
+            try
+            {
+                var conscliente = _uof.Cons_ClienteRepository.GetByTiers().ToList();
+
+                if (tier != null)
+                {
+                    conscliente = new List<Cons_Cliente>(conscliente.Where(t => t.TIERS.ToUpper().Equals(tier.ToUpper())));
+                }
+
+                return Ok(conscliente);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError
+                    , $"Erro ao tentar obter clientes por Tiers");
+            }
+        }
+
+
+        [HttpGet("faixa")]
+        public ActionResult<Cons_Cliente> GetByFaixa([FromQuery] int? ini, int? fim)
+        {
+            try
+            {
+                var conscliente = new object();
+                if (ini.HasValue && fim.HasValue)
+                {
+                    conscliente = _uof.Cons_ClienteRepository.GetByFaixa((int)ini, (int)fim);
+                }
+                else
+                {
+                    conscliente = _uof.Cons_ClienteRepository.Get().ToList();
+                }
+
+                if (conscliente == null)
+                {
+                    return NotFound($"Nenhum cliente encontrado");
+                }
+
+                return Ok(conscliente);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError
+                    , $"Erro ao tentar obter clientes por Faixa");
+            }
+        }
+
+
         [HttpPost]
         public ActionResult Post([FromBody] Cliente cliente)
         {
@@ -137,6 +231,7 @@ namespace TestePMWEB.Controllers
         }
 
 
+        [HttpGet]
 
         [Route("EnviarArquivo")]
         [HttpPost]

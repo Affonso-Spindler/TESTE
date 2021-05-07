@@ -8,6 +8,7 @@ namespace TestePMWEB.Repository
 {
     public interface IClienteRepository : IRepository<Cliente>
     {
-
+        IEnumerable<Cliente> GetByRegiao(string uf);
+        IEnumerable<Cliente> GetByRegiao(string uf, string cidade);
     }
 }

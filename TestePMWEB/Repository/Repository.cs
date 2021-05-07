@@ -42,5 +42,10 @@ namespace TestePMWEB.Repository
             _context.Entry(entity).State = EntityState.Modified;
             _context.Set<T>().Update(entity);
         }
+
+        public IQueryable<T> GetSQL(string query)
+        {
+            return _context.Set<T>().FromSql(query).AsNoTracking();
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace TestePMWEB.Repository
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
+        IQueryable<T> GetSQL(string query);
     }
 }

@@ -82,6 +82,58 @@ namespace TestePMWEB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cons_Clientes",
+                columns: table => new
+                {
+                    ID_CLIENTE = table.Column<int>(nullable: false),
+                    DATA_NASCIMENTO = table.Column<DateTime>(nullable: false),
+                    UF = table.Column<string>(maxLength: 2, nullable: true),
+                    CIDADE = table.Column<string>(maxLength: 50, nullable: true),
+                    TEMPO_MEDIOCOMPRAS = table.Column<int>(nullable: true),
+                    FAIXA = table.Column<decimal>(type: "money", nullable: true),
+                    TIERS = table.Column<string>(maxLength: 10, nullable: true),
+                    QTD_COMPRAS_12M = table.Column<int>(nullable: true),
+                    LTV = table.Column<decimal>(type: "money", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cons_Clientes", x => x.ID_CLIENTE);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CONS_RFV",
+                columns: table => new
+                {
+                    ID_CLIENTE = table.Column<int>(nullable: false),
+                    DATA_ULTIMA_COMPRA = table.Column<DateTime>(nullable: false),
+                    ULTIMO_DEPTO_COMPRA = table.Column<string>(maxLength: 30, nullable: true),
+                    PARCELAMENTO_PREFER = table.Column<string>(maxLength: 20, nullable: true),
+                    MEIO_PAGAMENTO_PREFER = table.Column<string>(maxLength: 30, nullable: true),
+                    TICKET_MEDIO_ALL = table.Column<decimal>(type: "decimal(8, 3)", nullable: false),
+                    TICKET_MEDIO_12M = table.Column<decimal>(type: "decimal(8, 3)", nullable: false),
+                    FREQUENCIA_COMPRA_ALL = table.Column<int>(nullable: false),
+                    FREQUENCIA_COMPRA_12M = table.Column<int>(nullable: false),
+                    TIER_ATUAL = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CONS_RFV", x => x.ID_CLIENTE);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tiers",
+                columns: table => new
+                {
+                    Faixa = table.Column<string>(maxLength: 10, nullable: false),
+                    ValorMin = table.Column<int>(nullable: true),
+                    ValorMax = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tiers", x => x.Faixa);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -197,7 +249,7 @@ namespace TestePMWEB.Migrations
                     ClienteID = table.Column<int>(nullable: true),
                     DEPARTAMENTO = table.Column<string>(maxLength: 50, nullable: true),
                     QUANTIDADE = table.Column<int>(nullable: false),
-                    VALOR_UNITARIO = table.Column<decimal>(type: "decimal(8, 3)", nullable: false),
+                    VALOR_UNITARIO = table.Column<decimal>(type: "money", nullable: false),
                     PARCELAS = table.Column<int>(nullable: false),
                     DATA_PEDIDO = table.Column<DateTime>(nullable: false),
                     MEIO_PAGAMENTO = table.Column<string>(maxLength: 50, nullable: true),
@@ -281,7 +333,16 @@ namespace TestePMWEB.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Cons_Clientes");
+
+            migrationBuilder.DropTable(
+                name: "CONS_RFV");
+
+            migrationBuilder.DropTable(
                 name: "Pedidos");
+
+            migrationBuilder.DropTable(
+                name: "Tiers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

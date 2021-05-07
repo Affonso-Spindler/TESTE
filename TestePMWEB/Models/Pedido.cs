@@ -14,6 +14,7 @@ namespace TestePMWEB.Models
 
         
         [Key]
+        [ForeignKey("Cliente")]
         [Required(ErrorMessage = "Id do Cliente não informada")]
         [Range(1, int.MaxValue, ErrorMessage = "Id do Cliente não informada")]
         public int ID_CLIENTE { get; set; }
@@ -32,8 +33,8 @@ namespace TestePMWEB.Models
         public int QUANTIDADE { get; set; }
 
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(8, 3)")]
-        public decimal VALOR_UNITARIO { get; set; }
+        [Column(TypeName = "money")]
+        public float VALOR_UNITARIO { get; set; }
 
         public int PARCELAS { get; set; }
 

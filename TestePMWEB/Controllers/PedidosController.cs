@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -188,7 +189,7 @@ namespace TestePMWEB.Controllers
                             ID_PRODUTO = Convert.ToInt32(itens[2]),
                             DEPARTAMENTO = itens[3],
                             QUANTIDADE = Convert.ToInt32(itens[4]),
-                            VALOR_UNITARIO = Convert.ToDecimal(itens[5]),
+                            VALOR_UNITARIO = float.Parse(itens[5]),
                             PARCELAS = Convert.ToInt32(itens[6]),
                             DATA_PEDIDO = DateTime.Parse(itens[7]),
                             MEIO_PAGAMENTO = itens[8],

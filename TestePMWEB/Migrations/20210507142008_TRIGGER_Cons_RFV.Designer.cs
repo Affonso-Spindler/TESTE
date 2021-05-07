@@ -10,8 +10,8 @@ using TestePMWEB.Context;
 namespace TestePMWEB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210502014649_Inicial")]
-    partial class Inicial
+    [Migration("20210507142008_TRIGGER_Cons_RFV")]
+    partial class TRIGGER_Cons_RFV
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -230,6 +230,70 @@ namespace TestePMWEB.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("TestePMWEB.Models.Cons_Cliente", b =>
+                {
+                    b.Property<int>("ID_CLIENTE");
+
+                    b.Property<string>("CIDADE")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("DATA_NASCIMENTO");
+
+                    b.Property<decimal?>("FAIXA")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("money");
+
+                    b.Property<decimal?>("LTV")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("money");
+
+                    b.Property<int?>("QTD_COMPRAS_12M");
+
+                    b.Property<int?>("TEMPO_MEDIOCOMPRAS");
+
+                    b.Property<string>("TIERS")
+                        .HasMaxLength(10);
+
+                    b.Property<string>("UF")
+                        .HasMaxLength(2);
+
+                    b.HasKey("ID_CLIENTE");
+
+                    b.ToTable("Cons_Clientes");
+                });
+
+            modelBuilder.Entity("TestePMWEB.Models.Cons_RFV", b =>
+                {
+                    b.Property<int>("ID_CLIENTE");
+
+                    b.Property<DateTime>("DATA_ULTIMA_COMPRA");
+
+                    b.Property<int>("FREQUENCIA_COMPRA_12M");
+
+                    b.Property<int>("FREQUENCIA_COMPRA_ALL");
+
+                    b.Property<string>("MEIO_PAGAMENTO_PREFER")
+                        .HasMaxLength(30);
+
+                    b.Property<string>("PARCELAMENTO_PREFER")
+                        .HasMaxLength(20);
+
+                    b.Property<decimal>("TICKET_MEDIO_12M")
+                        .HasColumnType("decimal(8, 3)");
+
+                    b.Property<decimal>("TICKET_MEDIO_ALL")
+                        .HasColumnType("decimal(8, 3)");
+
+                    b.Property<string>("TIER_ATUAL");
+
+                    b.Property<string>("ULTIMO_DEPTO_COMPRA")
+                        .HasMaxLength(30);
+
+                    b.HasKey("ID_CLIENTE");
+
+                    b.ToTable("CONS_RFV");
+                });
+
             modelBuilder.Entity("TestePMWEB.Models.Pedido", b =>
                 {
                     b.Property<int>("ID_PEDIDO");
@@ -256,7 +320,8 @@ namespace TestePMWEB.Migrations
                         .HasMaxLength(50);
 
                     b.Property<decimal>("VALOR_UNITARIO")
-                        .HasColumnType("decimal(8, 3)");
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("money");
 
                     b.HasKey("ID_PEDIDO", "ID_CLIENTE", "ID_PRODUTO");
 
@@ -265,6 +330,20 @@ namespace TestePMWEB.Migrations
                     b.HasIndex("ClienteID");
 
                     b.ToTable("Pedidos");
+                });
+
+            modelBuilder.Entity("TestePMWEB.Models.Tier", b =>
+                {
+                    b.Property<string>("Faixa")
+                        .HasMaxLength(10);
+
+                    b.Property<int?>("ValorMax");
+
+                    b.Property<int?>("ValorMin");
+
+                    b.HasKey("Faixa");
+
+                    b.ToTable("Tiers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -7,6 +7,7 @@ namespace TestePMWEB.Repository
         private PedidoRepository _pedidoRepo;
         private ClienteRepository _clienteRepo;
         private API_LogRepository _logRepo;
+        private Cons_ClienteRepository _consCliente;
         public AppDbContext _context;
 
         public UnitOfWork(AppDbContext context)
@@ -38,6 +39,13 @@ namespace TestePMWEB.Repository
             }
         }
 
+        public ICons_ClienteRepository Cons_ClienteRepository
+        {
+            get
+            {
+                return _consCliente = _consCliente ?? new Cons_ClienteRepository(_context);
+            }
+        }
 
         public void Commit()
         {
